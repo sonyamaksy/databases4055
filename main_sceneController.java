@@ -9,7 +9,8 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 
 public class main_sceneController {
-
+	
+	//all of the fxml variables from input 
     @FXML
     private TextField fname;
 
@@ -43,6 +44,7 @@ public class main_sceneController {
     @FXML
     void btnSubmitClicked(ActionEvent event) {
     	
+    	//storing all of the values once the submit is clicked
     	String f_name = fname.getText();
     	String m_init = midinit.getText();
     	String l_name = lname.getText();
@@ -59,6 +61,7 @@ public class main_sceneController {
        	String full_name = f_name + " " + m_init + " " + l_name;
     	String address = city1 + ", " + state1 + ", " + zipcode;
     	
+    	//printing out to see if it works properly
     	System.out.println("Your name is: " + full_name);
     	System.out.println("Your email is: " + e_mail);
     	System.out.println("Your address is: " + address);
@@ -69,4 +72,3 @@ public class main_sceneController {
     }
 
 }
-
