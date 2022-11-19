@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <AnchorPane prefHeight="512.0" prefWidth="666.0">
+         <children>
+            <Label layoutX="112.0" layoutY="14.0" prefHeight="62.0" prefWidth="442.0" text="Visitors Bureau Database">
+               <font>
+                  <Font size="40.0" />
+               </font>
+            </Label>
+            <TextField layoutX="272.0" layoutY="195.0" />
+            <Label layoutX="193.0" layoutY="199.0" text="Zip Code" />
+            <TextField layoutX="272.0" layoutY="243.0" />
+            <TextField layoutX="272.0" layoutY="291.0" />
+            <Label layoutX="193.0" layoutY="247.0" text="City" />
+            <Label layoutX="193.0" layoutY="295.0" text="Metropolis" />
+            <Button layoutX="307.0" layoutY="351.0" mnemonicParsing="false" text="Search" />
+            <Label layoutX="147.0" layoutY="113.0" prefHeight="27.0" prefWidth="372.0" text="Enter information below to narrow your search">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+         </children></AnchorPane>
+   </children>
+</AnchorPane>
