@@ -16,14 +16,11 @@ public class DtbsUtil {
     											+ " date_of_visit, group_amount, reason)"
     									        + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
-	String cityString = "SELECT name, email, city, state, zipcode, date_of_visit,"
-			+ "group_amount, reason FROM visitor_info WHERE city LIKE ?";
+	String cityString = "SELECT * FROM visitor_info WHERE city LIKE ? ?";
 	
-	String zipString = "SELECT name, email, city, state, zipcode, date_of_visit, "
-			+ "group_amount, reason FROM visitor_info WHERE zipcode LIKE ?";
+	String zipString = "SELECT * FROM visitor_info WHERE zipcode LIKE ? ?";
 	
-	String city_and_zipString = "SELECT name, email, city, state, zipcode, date_of_visit, "
-			+ "group_amount, reason FROM visitor_info WHERE city LIKE ? AND zipcode LIKE ?";
+	String city_and_zipString = "SELECT * FROM visitor_info WHERE city LIKE ? AND zipcode LIKE ? ?";
 	
 	public DtbsUtil() {
 		visitors = FXCollections.observableArrayList();
@@ -77,7 +74,7 @@ public class DtbsUtil {
 	}   
 	
 	//method for getting the values from database based on city
-	public void displayByCity(String city)
+	public void displayByCity(String city, String date, String reason)
 	{
 		ObservableList<Visitor> newList = FXCollections.observableArrayList();		
 		Connection con = null;
@@ -86,6 +83,18 @@ public class DtbsUtil {
 				
 			PreparedStatement ps = con.prepareStatement(cityString);
 			ps.setString(1, "%" + city + "%");
+			if (date != null && reason != null)
+            {
+                ps.setString(2, "AND date = '" + date + "' AND reason LIKE %" + reason + "%");
+            }
+            else if (date != null)
+            {
+                ps.setString(2, "AND date = '" + date + "'");
+            }
+            else if (reason != null)
+            {
+                ps.setString(2, "AND reason LIKE %" + reason + "%");
+            }
 			ResultSet rs = ps.executeQuery();
 			
 			while(rs.next()) {
@@ -104,7 +113,7 @@ public class DtbsUtil {
 	}
 	
 	//method for getting the values from database based on city and zipcode
-	public void displayByZipAndCity(String zipcode, String city)
+	public void displayByZipAndCity(String zipcode, String city, String date, String reason)
 	{
 		ObservableList<Visitor> newList = FXCollections.observableArrayList();		
 		Connection con = null;
@@ -114,6 +123,18 @@ public class DtbsUtil {
 			PreparedStatement ps = con.prepareStatement(city_and_zipString);
 			ps.setString(1, "%" + city + "%");
 			ps.setString(2, "%" + zipcode + "%");
+			if (date != null && reason != null)
+            {
+                ps.setString(3, "AND date = '" + date + "' AND reason LIKE %" + reason + "%");
+            }
+            else if (date != null)
+            {
+                ps.setString(3, "AND date = '" + date + "'");
+            }
+            else if (reason != null)
+            {
+                ps.setString(3, "AND reason LIKE %" + reason + "%");
+            }
 			ResultSet rs = ps.executeQuery();
 			
 			while(rs.next()) {
@@ -131,7 +152,7 @@ public class DtbsUtil {
 	}
 	
 	//method to display values by zip code
-	public void displayByZip(String zip)
+	public void displayByZip(String zip, String date, String reason)
 	{
 		ObservableList<Visitor> newList = FXCollections.observableArrayList();		
 		Connection con = null;
@@ -140,6 +161,18 @@ public class DtbsUtil {
 					
 			PreparedStatement ps = con.prepareStatement(zipString);
 			ps.setString(1, "%" + zip + "%");
+			if (date != null && reason != null)
+            {
+                ps.setString(2, "AND date = '" + date + "' AND reason LIKE %" + reason + "%");
+            }
+            else if (date != null)
+            {
+                ps.setString(2, "AND date = '" + date + "'");
+            }
+            else if (reason != null)
+            {
+                ps.setString(2, "AND reason LIKE %" + reason + "%");
+            }
 			ResultSet rs = ps.executeQuery();
 			
 			while(rs.next()) {

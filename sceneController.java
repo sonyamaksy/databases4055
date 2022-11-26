@@ -77,16 +77,16 @@ public class sceneController {
 
     	if (!city_input.getText().isEmpty() && !zip_input.getText().isEmpty())
     	{
-    		model.displayByZipAndCity(zip_input.getText(), city_input.getText());
+    		model.displayByZipAndCity(zip_input.getText(), city_input.getText(), date_input.getText(), reason_input.getText());
     	}
     	else if (!city_input.getText().isEmpty())
     	{
-    		model.displayByCity(city_input.getText());
+    		model.displayByCity(city_input.getText(), date_input.getText(), reason_input.getText());
     	}
     	
     	else if(!zip_input.getText().isEmpty())
     	{
-    		model.displayByZip(zip_input.getText());
+    		model.displayByZip(zip_input.getText(), date_input.getText(), reason_input.getText());
     	}
     	
     	//if no people were found, an error window shows up saying that no people were found
