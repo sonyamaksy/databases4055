@@ -16,11 +16,20 @@ public class DtbsUtil {
     											+ " date_of_visit, group_amount, reason)"
     									        + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
-	String cityString = "SELECT * FROM visitor_info WHERE city LIKE ? ?";
+	String city = "SELECT * FROM visitor_info WHERE city LIKE ?";
+	String city_date = "SELECT * FROM visitor_info WHERE city LIKE ? AND date_of_visit = ?";
+	String city_reason = "SELECT * FROM visitor_info WHERE city LIKE ? AND reason LIKE ?";
+	String city_date_reason = "SELECT * FROM visitor_info WHERE city LIKE ? AND date_of_visit = ? AND reason LIKE ?";
 	
-	String zipString = "SELECT * FROM visitor_info WHERE zipcode LIKE ? ?";
+	String zip = "SELECT * FROM visitor_info WHERE zipcode LIKE ?";
+	String zip_date = "SELECT * FROM visitor_info WHERE zipcode LIKE ? AND date_of_visit = ?";
+	String zip_reason = "SELECT * FROM visitor_info WHERE zipcode LIKE ? AND reason LIKE ?";
+	String zip_date_reason = "SELECT * FROM visitor_info WHERE zipcode LIKE ? AND date_of_visit = ? AND reason LIKE ?";
 	
-	String city_and_zipString = "SELECT * FROM visitor_info WHERE city LIKE ? AND zipcode LIKE ? ?";
+	String city_zip = "SELECT * FROM visitor_info WHERE city LIKE ? AND zipcode LIKE ?";		
+	String city_zip_date = "SELECT * FROM visitor_info WHERE city LIKE ? AND zipcode LIKE ? AND date_of_visit LIKE ?";
+	String city_zip_reason = "SELECT * FROM visitor_info WHERE city LIKE ? AND zipcode LIKE ? AND reason LIKE ?";
+	String city_zip_date_reason = "SELECT * FROM visitor_info WHERE city LIKE ? AND zipcode LIKE ? AND date_of_visit LIKE ? AND reason LIKE ?";
 	
 	public DtbsUtil() {
 		visitors = FXCollections.observableArrayList();
@@ -78,25 +87,42 @@ public class DtbsUtil {
 	{
 		ObservableList<Visitor> newList = FXCollections.observableArrayList();		
 		Connection con = null;
+		ResultSet rs;
 		try {
 			con = DriverManager.getConnection("jdbc:mysql://localhost:3306/guestbook", "root", "");
 				
-			PreparedStatement ps = con.prepareStatement(cityString);
-			ps.setString(1, "%" + city + "%");
-			if (date != null && reason != null)
+			if (!date.isEmpty() && !reason.isEmpty())
             {
-                ps.setString(2, "AND date = '" + date + "' AND reason LIKE %" + reason + "%");
+    			PreparedStatement ps = con.prepareStatement(city_zip_date);
+				ps.setString(1, "%" + city + "%");
+				ps.setString(2, "%" + date + "%");
+				ps.setString(3, "%" + reason +"%");
+    			System.out.println(ps);
+    			rs = ps.executeQuery();
             }
-            else if (date != null)
+            else if (!date.isEmpty())
             {
-                ps.setString(2, "AND date = '" + date + "'");
+    			PreparedStatement ps = con.prepareStatement(city_date);
+            	ps.setString(1, "%" + city + "%");
+				ps.setString(2, "%" + date + "%");
+    			System.out.println(ps);
+    			rs = ps.executeQuery();
             }
-            else if (reason != null)
+            else if (!reason.isEmpty())
             {
-                ps.setString(2, "AND reason LIKE %" + reason + "%");
+    			PreparedStatement ps = con.prepareStatement(city_reason);
+            	ps.setString(1, "%" + city + "%");
+				ps.setString(2, "%" + reason + "%");
+    			System.out.println(ps);
+    			rs = ps.executeQuery();
             }
-			ResultSet rs = ps.executeQuery();
-			
+            else
+            {
+    			PreparedStatement ps = con.prepareStatement(city);
+    			ps.setString(1, "%" + city + "%");
+    			System.out.println(ps);
+    			rs = ps.executeQuery();
+            }			
 			while(rs.next()) {
 				newList.add(new Visitor(rs.getString("name"), rs.getString("email"),
 										rs.getString("city"), rs.getString("state"),
@@ -108,8 +134,7 @@ public class DtbsUtil {
 		{
 			e.printStackTrace();
 		}
-		visitors = newList;
-		
+		visitors = newList;		
 	}
 	
 	//method for getting the values from database based on city and zipcode
@@ -119,23 +144,43 @@ public class DtbsUtil {
 		Connection con = null;
 		try {
 			con = DriverManager.getConnection("jdbc:mysql://localhost:3306/guestbook", "root", "");
-					
-			PreparedStatement ps = con.prepareStatement(city_and_zipString);
-			ps.setString(1, "%" + city + "%");
-			ps.setString(2, "%" + zipcode + "%");
-			if (date != null && reason != null)
+			ResultSet rs;
+			if (!date.isEmpty() && !reason.isEmpty())
             {
-                ps.setString(3, "AND date = '" + date + "' AND reason LIKE %" + reason + "%");
+                PreparedStatement ps = con.prepareStatement(city_zip_date_reason);
+                ps.setString(1, "%" + city + "%");
+    			ps.setString(2, "%" + zipcode + "%");
+    			ps.setString(3, "%" + date + "%");
+    			ps.setString(4, "%" + reason + "%");
+    			System.out.println(ps);
+    			rs = ps.executeQuery();
             }
-            else if (date != null)
+            else if (!date.isEmpty())
             {
-                ps.setString(3, "AND date = '" + date + "'");
+            	PreparedStatement ps = con.prepareStatement(city_zip_date);
+                ps.setString(1, "%" + city + "%");
+    			ps.setString(2, "%" + zipcode + "%");
+    			ps.setString(3, "%" + date + "%");
+    			System.out.println(ps);
+    			rs = ps.executeQuery();
             }
-            else if (reason != null)
+            else if (!reason.isEmpty())
             {
-                ps.setString(3, "AND reason LIKE %" + reason + "%");
+            	PreparedStatement ps = con.prepareStatement(city_zip_reason);
+                ps.setString(1, "%" + city + "%");
+    			ps.setString(2, "%" + zipcode + "%");
+    			ps.setString(3, "%" + reason + "%");
+    			System.out.println(ps);
+    			rs = ps.executeQuery();
             }
-			ResultSet rs = ps.executeQuery();
+            else
+            {
+            	PreparedStatement ps = con.prepareStatement(city_zip);
+                ps.setString(1, "%" + city + "%");
+    			ps.setString(2, "%" + zipcode + "%");
+    			System.out.println(ps);
+    			rs = ps.executeQuery();
+            }
 			
 			while(rs.next()) {
 				newList.add(new Visitor(rs.getString("name"), rs.getString("email"),
@@ -156,24 +201,45 @@ public class DtbsUtil {
 	{
 		ObservableList<Visitor> newList = FXCollections.observableArrayList();		
 		Connection con = null;
+		ResultSet rs;
+		
 		try {
 			con = DriverManager.getConnection("jdbc:mysql://localhost:3306/guestbook", "root", "");
-					
-			PreparedStatement ps = con.prepareStatement(zipString);
-			ps.setString(1, "%" + zip + "%");
-			if (date != null && reason != null)
+			
+			if (!date.isEmpty() && !reason.isEmpty())
             {
-                ps.setString(2, "AND date = '" + date + "' AND reason LIKE %" + reason + "%");
+    			PreparedStatement ps = con.prepareStatement(zip_date_reason);
+    			ps.setString(1, "%" + zip + "%");
+    			ps.setString(2, "%" + date + "%");
+    			ps.setString(3, "%" + reason + "%");
+				System.out.println(ps);
+				rs = ps.executeQuery();
             }
-            else if (date != null)
+            else if (!date.isEmpty())
             {
-                ps.setString(2, "AND date = '" + date + "'");
+    			PreparedStatement ps = con.prepareStatement(zip_date);
+    			ps.setString(1, "%" + zip + "%");
+       			ps.setString(2, "%" + date + "%");
+    			System.out.println(ps);
+    			rs = ps.executeQuery();
             }
-            else if (reason != null)
+            else if (!reason.isEmpty())
             {
-                ps.setString(2, "AND reason LIKE %" + reason + "%");
+    			PreparedStatement ps = con.prepareStatement(zip_reason);
+    			ps.setString(1, "%" + zip + "%");
+    			ps.setString(2, "%" + reason + "%");
+    			System.out.println(ps);
+    			rs = ps.executeQuery();
             }
-			ResultSet rs = ps.executeQuery();
+			
+			//added an else statement if neither reason or date were specified
+            else
+            {
+    			PreparedStatement ps = con.prepareStatement(zip);
+    			ps.setString(1, "%" + zip + "%");
+    			System.out.println(ps);
+    			rs = ps.executeQuery();
+            }
 			
 			while(rs.next()) {
 				newList.add(new Visitor(rs.getString("name"), rs.getString("email"),
