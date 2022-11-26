@@ -1,5 +1,6 @@
 /**
- * Class that initializes the ArrayList and does SQL queries, for now you can only search by city
+ * Class that initializes the ArrayList and does SQL queries, 
+ * for now you can only search by city and zip code
  */
 package application;
 
@@ -8,7 +9,7 @@ import java.sql.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-public class linkLists {
+public class DtbsUtil {
 
 	private ObservableList<Visitor> visitors;
     private static final String INSERT_QUERY = "INSERT INTO visitor_info (name, email, city, state, zipcode,"
@@ -21,7 +22,10 @@ public class linkLists {
 	String zipString = "SELECT name, email, city, state, zipcode, date_of_visit, "
 			+ "group_amount, reason FROM visitor_info WHERE zipcode LIKE ?";
 	
-	public linkLists() {
+	String city_and_zipString = "SELECT name, email, city, state, zipcode, date_of_visit, "
+			+ "group_amount, reason FROM visitor_info WHERE city LIKE ? AND zipcode LIKE ?";
+	
+	public DtbsUtil() {
 		visitors = FXCollections.observableArrayList();
 	}
 
@@ -72,15 +76,14 @@ public class linkLists {
 		 }
 	}   
 	
-	//method for getting the values from database
+	//method for getting the values from database based on city
 	public void displayByCity(String city)
 	{
 		ObservableList<Visitor> newList = FXCollections.observableArrayList();		
 		Connection con = null;
 		try {
 			con = DriverManager.getConnection("jdbc:mysql://localhost:3306/guestbook", "root", "");
-			
-			
+				
 			PreparedStatement ps = con.prepareStatement(cityString);
 			ps.setString(1, "%" + city + "%");
 			ResultSet rs = ps.executeQuery();
@@ -100,14 +103,41 @@ public class linkLists {
 		
 	}
 	
+	//method for getting the values from database based on city and zipcode
+	public void displayByZipAndCity(String zipcode, String city)
+	{
+		ObservableList<Visitor> newList = FXCollections.observableArrayList();		
+		Connection con = null;
+		try {
+			con = DriverManager.getConnection("jdbc:mysql://localhost:3306/guestbook", "root", "");
+					
+			PreparedStatement ps = con.prepareStatement(city_and_zipString);
+			ps.setString(1, "%" + city + "%");
+			ps.setString(2, "%" + zipcode + "%");
+			ResultSet rs = ps.executeQuery();
+			
+			while(rs.next()) {
+				newList.add(new Visitor(rs.getString("name"), rs.getString("email"),
+										rs.getString("city"), rs.getString("state"),
+										rs.getInt("zipcode"), rs.getString("date_of_visit"),
+										rs.getInt("group_amount"), rs.getString("reason")));
+			}
+		}
+		catch(SQLException e)
+		{
+			e.printStackTrace();
+		}
+		visitors = newList;		
+	}
+	
+	//method to display values by zip code
 	public void displayByZip(String zip)
 	{
 		ObservableList<Visitor> newList = FXCollections.observableArrayList();		
 		Connection con = null;
 		try {
 			con = DriverManager.getConnection("jdbc:mysql://localhost:3306/guestbook", "root", "");
-			
-			
+					
 			PreparedStatement ps = con.prepareStatement(zipString);
 			ps.setString(1, "%" + zip + "%");
 			ResultSet rs = ps.executeQuery();
