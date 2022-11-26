@@ -74,19 +74,25 @@ public class sceneController {
     void handlesearchButton(ActionEvent event) {
     	setTableView();
     	Window owner = search_button.getScene().getWindow();
+    	String date = "";
+    	
+    	if (date_input.getValue() != null)
+    	{
+    		date = date_input.getValue().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+    	}
 
     	if (!city_input.getText().isEmpty() && !zip_input.getText().isEmpty())
     	{
-    		model.displayByZipAndCity(zip_input.getText(), city_input.getText(), date_input.getText(), reason_input.getText());
+    		model.displayByZipAndCity(zip_input.getText(), city_input.getText(), date, reason_input.getText());
     	}
     	else if (!city_input.getText().isEmpty())
     	{
-    		model.displayByCity(city_input.getText(), date_input.getText(), reason_input.getText());
+    		model.displayByCity(city_input.getText(), date, reason_input.getText());
     	}
     	
     	else if(!zip_input.getText().isEmpty())
     	{
-    		model.displayByZip(zip_input.getText(), date_input.getText(), reason_input.getText());
+    		model.displayByZip(zip_input.getText(), date, reason_input.getText());
     	}
     	
     	//if no people were found, an error window shows up saying that no people were found
