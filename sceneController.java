@@ -1,4 +1,4 @@
-//Controller class nothing fancy 
+//Controller class  
 package application;
 
 import java.io.IOException;
@@ -22,14 +22,46 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 
 public class sceneController {
-
-	private linkLists model = new linkLists();
 	
+	//object to access database class with sql methods
+	private DtbsUtil model = new DtbsUtil();
+	
+	//all of the buttons in fxml files
     @FXML
-    Button switch_database, switch_visitor, submit_button;
+    Button switch_database, v_main, b_main, submit_button, search_button,
+    	   visitor, bureau;
     
+    //takes user to database search side
     @FXML
-    private Button search_button;
+    void goToBureau(ActionEvent event) throws IOException {
+    	Parent root = FXMLLoader.load(getClass().getResource("database_scene.fxml"));
+    	Stage window = (Stage) bureau.getScene().getWindow();
+    	window.setScene(new Scene(root));
+    }
+    
+    //takes user to visitor's input side
+    @FXML
+    void goToVisitor(ActionEvent event) throws IOException {
+    	Parent root = FXMLLoader.load(getClass().getResource("visitors_view.fxml"));
+    	Stage window = (Stage) visitor.getScene().getWindow();
+    	window.setScene(new Scene(root));
+    }
+    
+    //takes user from bureau side to main menu
+    @FXML
+    void bureau_toMainMenu() throws IOException {
+    	Parent root = FXMLLoader.load(getClass().getResource("start_menu.fxml"));
+    	Stage window = (Stage) b_main.getScene().getWindow();
+    	window.setScene(new Scene(root));
+    }
+    
+    //takes user from visitor's side to main menu
+    @FXML
+    void visitor_toMainMenu() throws IOException {
+    	Parent root = FXMLLoader.load(getClass().getResource("start_menu.fxml"));
+    	Stage window = (Stage) v_main.getScene().getWindow();
+    	window.setScene(new Scene(root));
+    }
     
     @FXML
     void handleCity(ActionEvent event)
@@ -37,7 +69,7 @@ public class sceneController {
     	handlesearchButton(event);
     }
     
-    //searching by city and zipcode 
+    //searching by city, zipcode, city + zipcode
     @FXML
     void handlesearchButton(ActionEvent event) {
     	setTableView();
@@ -45,7 +77,7 @@ public class sceneController {
 
     	if (!city_input.getText().isEmpty() && !zip_input.getText().isEmpty())
     	{
-    		model.displayByCity(city_input.getText());
+    		model.displayByZipAndCity(zip_input.getText(), city_input.getText());
     	}
     	else if (!city_input.getText().isEmpty())
     	{
@@ -68,6 +100,7 @@ public class sceneController {
     	}
     }
 
+    //sends information to the database from visitor's input
     @FXML
     void btnSubmitClicked(ActionEvent event) throws SQLException{
     	Window owner = submit_button.getScene().getWindow();
@@ -100,7 +133,7 @@ public class sceneController {
     	
     }
     
-    //method for displaying an error
+    //method for displaying an error with input from user's side
     private static void showAlert(Alert.AlertType alertType, Window owner, String title, String message) 
     {
         Alert alert = new Alert(alertType);
@@ -111,20 +144,7 @@ public class sceneController {
         alert.show();
     }
     
-    @FXML
-    void switchToVisitor() throws IOException {
-    	Parent root = FXMLLoader.load(getClass().getResource("visitors_view.fxml"));
-    	Stage window = (Stage) switch_visitor.getScene().getWindow();
-    	window.setScene(new Scene(root));
-    }
-    
-    @FXML
-    void switchToDatabase() throws IOException {
-    	Parent root = FXMLLoader.load(getClass().getResource("database_scene.fxml"));
-    	Stage window = (Stage) switch_database.getScene().getWindow();
-    	window.setScene(new Scene(root));
-    }
-    
+    //setting table view 
     @FXML
     public void setTableView() {
     	nameColumn.setCellValueFactory(new PropertyValueFactory<Visitor, String>("Name"));
