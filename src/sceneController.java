@@ -2,6 +2,7 @@
 //Controller class  
 import java.io.IOException;
 import java.sql.*;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 import javafx.event.ActionEvent;
@@ -62,44 +63,29 @@ public class sceneController {
         window.setScene(new Scene(root));
     }
 
-    @FXML
-    void handleCity(ActionEvent event) {
-        handlesearchButton(event);
-    }
-
     // searching by city, zipcode, city + zipcode
     @FXML
     void handlesearchButton(ActionEvent event) {
         setTableView();
 
-        String date = "";
+        LocalDate date = null;
 
-        if (date_input.getValue() != null) {
-            date = date_input.getValue().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-        }
-
-        // if (metro_input.getText() != null) {
-        // model.displayMetropolis(metro_input.getText(), city_input.getText(),
-        // zip_input.getText(), date,
-        // reason_input.getText());
-        // }
-        model.displayMetropolis(metro_input.getText(), city_input.getText(), zip_input.getText(), date,
-                reason_input.getText());
         Window owner = search_button.getScene().getWindow();
 
-        // if (!city_input.getText().isEmpty() && !zip_input.getText().isEmpty()) {
-        // model.displayByZipAndCity(zip_input.getText(), city_input.getText(), date,
-        // reason_input.getText());
-        // } else if (!city_input.getText().isEmpty()) {
-        // model.displayByCity(city_input.getText(), date, reason_input.getText());
-        // }
+        if (metro_input.getText().isEmpty() && city_input.getText().isEmpty() && zip_input.getText().isEmpty()
+                && date_input.getValue() != null &&
+                reason_input.getText().isEmpty()) {
+            showAlert(Alert.AlertType.ERROR, owner, "Form Error", "Please fill out all fields.");
+            return;
+        }
 
-        // else if (!zip_input.getText().isEmpty()) {
-        // model.displayByZip(zip_input.getText(), date, reason_input.getText());
-        // }
+        if (date_input.getValue() != null) {
+            date = date_input.getValue();
+        }
 
-        // if no people were found, an error window shows up saying that no people were
-        // found
+        model.displayfilters(metro_input.getText(), city_input.getText(), zip_input.getText(), date,
+                reason_input.getText());
+
         if (model.getVisitors().isEmpty()) {
             showAlert(Alert.AlertType.ERROR, owner, "No Entries", "No people were found based on your search.");
         } else {
@@ -134,6 +120,7 @@ public class sceneController {
         String reason1 = reason.getText();
 
         model.insertRecord(name, email1, city1, state1, zipcode, date1, people, reason1);
+
         showAlert(Alert.AlertType.CONFIRMATION, owner, "Registration Successful!",
                 "You are registered " + name);
 

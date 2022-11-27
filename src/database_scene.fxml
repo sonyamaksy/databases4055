@@ -32,7 +32,7 @@
                      </font>
                   </Label>
                   <Label layoutX="12.0" layoutY="294.0" text="Reason for visit" AnchorPane.leftAnchor="12.0" />
-                  <TextField fx:id="city_input" layoutX="11.0" layoutY="85.0" onAction="#handleCity" AnchorPane.leftAnchor="12.0" />
+                  <TextField fx:id="city_input" layoutX="11.0" layoutY="85.0" AnchorPane.leftAnchor="12.0" />
                   <TextField fx:id="zip_input" layoutX="11.0" layoutY="136.0" AnchorPane.leftAnchor="12.0" />
                   <TextField fx:id="metro_input" layoutX="11.0" layoutY="185.0" AnchorPane.leftAnchor="12.0" />
                   <TextArea fx:id="reason_input" layoutX="14.0" layoutY="311.0" prefHeight="90.0" prefWidth="170.0" AnchorPane.leftAnchor="12.0" />
