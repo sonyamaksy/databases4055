@@ -16,12 +16,12 @@ public class DtbsUtil {
     											+ " date_of_visit, group_amount, reason)"
     									        + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
-	String city = "SELECT * FROM visitor_info WHERE city LIKE ?";
+	String city1 = "SELECT * FROM visitor_info WHERE city LIKE ?";
 	String city_date = "SELECT * FROM visitor_info WHERE city LIKE ? AND date_of_visit = ?";
 	String city_reason = "SELECT * FROM visitor_info WHERE city LIKE ? AND reason LIKE ?";
 	String city_date_reason = "SELECT * FROM visitor_info WHERE city LIKE ? AND date_of_visit = ? AND reason LIKE ?";
 	
-	String zip = "SELECT * FROM visitor_info WHERE zipcode LIKE ?";
+	String zip1 = "SELECT * FROM visitor_info WHERE zipcode LIKE ?";
 	String zip_date = "SELECT * FROM visitor_info WHERE zipcode LIKE ? AND date_of_visit = ?";
 	String zip_reason = "SELECT * FROM visitor_info WHERE zipcode LIKE ? AND reason LIKE ?";
 	String zip_date_reason = "SELECT * FROM visitor_info WHERE zipcode LIKE ? AND date_of_visit = ? AND reason LIKE ?";
@@ -118,7 +118,7 @@ public class DtbsUtil {
             }
             else
             {
-    			PreparedStatement ps = con.prepareStatement(city);
+    			PreparedStatement ps = con.prepareStatement(city1);
     			ps.setString(1, "%" + city + "%");
     			System.out.println(ps);
     			rs = ps.executeQuery();
@@ -235,7 +235,7 @@ public class DtbsUtil {
 			//added an else statement if neither reason or date were specified
             else
             {
-    			PreparedStatement ps = con.prepareStatement(zip);
+    			PreparedStatement ps = con.prepareStatement(zip1);
     			ps.setString(1, "%" + zip + "%");
     			System.out.println(ps);
     			rs = ps.executeQuery();
