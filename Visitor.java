@@ -1,6 +1,4 @@
 //Class that stores info about visitors in an object
-package application;
-
 public class Visitor {
 	private String name;
 	private String email;
