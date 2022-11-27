@@ -103,6 +103,7 @@ public class sceneController {
     	else
     	{
             tableview.setItems(model.getVisitors());
+	    totalSearchResults.setText("Your search has returned " + tableview.getItems().size() + " results.");
     	}
     }
 
