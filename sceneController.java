@@ -30,6 +30,7 @@ public class sceneController {
     @FXML
     Button switch_database, v_main, b_main, submit_button, search_button,
     	   visitor, bureau;
+    Label totalSearchResults;
     
     //takes user to database search side
     @FXML
