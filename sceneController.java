@@ -1,8 +1,7 @@
 //Controller class  
-package application;
-
 import java.io.IOException;
 import java.sql.*;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 import javafx.event.ActionEvent;
@@ -22,128 +21,113 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 
 public class sceneController {
-	
-	//object to access database class with sql methods
-	private DtbsUtil model = new DtbsUtil();
-	
-	//all of the buttons in fxml files
+
+    // object to access database class with sql methods
+    private DtbsUtil model = new DtbsUtil();
+    
+    // all of the buttons in fxml files
     @FXML
     Button switch_database, v_main, b_main, submit_button, search_button,
-    	   visitor, bureau;
-    Label totalSearchResults;
-    
-    //takes user to database search side
+            visitor, bureau;
+
+    // takes user to database search side
     @FXML
     void goToBureau(ActionEvent event) throws IOException {
-    	Parent root = FXMLLoader.load(getClass().getResource("database_scene.fxml"));
-    	Stage window = (Stage) bureau.getScene().getWindow();
-    	window.setScene(new Scene(root));
+        Parent root = FXMLLoader.load(getClass().getResource("database_scene.fxml"));
+        Stage window = (Stage) bureau.getScene().getWindow();
+        window.setScene(new Scene(root));
     }
-    
-    //takes user to visitor's input side
+
+    // takes user to visitor's input side
     @FXML
     void goToVisitor(ActionEvent event) throws IOException {
-    	Parent root = FXMLLoader.load(getClass().getResource("visitors_view.fxml"));
-    	Stage window = (Stage) visitor.getScene().getWindow();
-    	window.setScene(new Scene(root));
+        Parent root = FXMLLoader.load(getClass().getResource("visitors_view.fxml"));
+        Stage window = (Stage) visitor.getScene().getWindow();
+        window.setScene(new Scene(root));
     }
-    
-    //takes user from bureau side to main menu
+
+    // takes user from bureau side to main menu
     @FXML
     void bureau_toMainMenu() throws IOException {
-    	Parent root = FXMLLoader.load(getClass().getResource("start_menu.fxml"));
-    	Stage window = (Stage) b_main.getScene().getWindow();
-    	window.setScene(new Scene(root));
+        Parent root = FXMLLoader.load(getClass().getResource("start_menu.fxml"));
+        Stage window = (Stage) b_main.getScene().getWindow();
+        window.setScene(new Scene(root));
     }
-    
-    //takes user from visitor's side to main menu
+
+    // takes user from visitor's side to main menu
     @FXML
     void visitor_toMainMenu() throws IOException {
-    	Parent root = FXMLLoader.load(getClass().getResource("start_menu.fxml"));
-    	Stage window = (Stage) v_main.getScene().getWindow();
-    	window.setScene(new Scene(root));
+        Parent root = FXMLLoader.load(getClass().getResource("start_menu.fxml"));
+        Stage window = (Stage) v_main.getScene().getWindow();
+        window.setScene(new Scene(root));
     }
-    
-    @FXML
-    void handleCity(ActionEvent event)
-    {
-    	handlesearchButton(event);
-    }
-    
-    //searching by city, zipcode, city + zipcode
+
+    // searching the database
     @FXML
     void handlesearchButton(ActionEvent event) {
-    	setTableView();
-    	Window owner = search_button.getScene().getWindow();
-    	String date = "";
-    	
-    	if (date_input.getValue() != null)
-    	{
-    		date = date_input.getValue().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-    	}
+        setTableView();
+        LocalDate date = null;
+        Window owner = search_button.getScene().getWindow();
 
-    	if (!city_input.getText().isEmpty() && !zip_input.getText().isEmpty())
-    	{
-    		model.displayByZipAndCity(zip_input.getText(), city_input.getText(), date, reason_input.getText());
-    	}
-    	else if (!city_input.getText().isEmpty())
-    	{
-    		model.displayByCity(city_input.getText(), date, reason_input.getText());
-    	}
-    	
-    	else if(!zip_input.getText().isEmpty())
-    	{
-    		model.displayByZip(zip_input.getText(), date, reason_input.getText());
-    	}
-    	
-    	//if no people were found, an error window shows up saying that no people were found
-    	if (model.getVisitors().isEmpty())
-    	{
-    		showAlert(Alert.AlertType.ERROR, owner, "No Entries", "No people were found based on your search.");
-    	}
-    	else
+        if (metro_input.getText().isEmpty() && city_input.getText().isEmpty() && zip_input.getText().isEmpty()
+                && date_input.getValue() == null && reason_input.getText().isEmpty()) 
+        {
+            showAlert(Alert.AlertType.ERROR, owner, "Form Error", "Please fill out at least one field.");
+            return;
+        }
+
+        if (date_input.getValue() != null) {
+            date = date_input.getValue();
+        }
+
+        model.displayfilters(metro_input.getText(), city_input.getText(), zip_input.getText(), date,
+                reason_input.getText());
+
+        if (model.getVisitors().isEmpty()) {
+            showAlert(Alert.AlertType.ERROR, owner, "No Entries", "No people were found based on your search.");
+        }     	
+        else
     	{
             tableview.setItems(model.getVisitors());
-	    totalSearchResults.setText("Your search has returned " + tableview.getItems().size() + " results.");
     	}
+       
     }
 
-    //sends information to the database from visitor's input
+    // sends information to the database from visitor's input
     @FXML
-    void btnSubmitClicked(ActionEvent event) throws SQLException{
-    	Window owner = submit_button.getScene().getWindow();
-    	
-    	//throwing an error if not all fields are filled out
-    	if (fname.getText().isEmpty() || lname.getText().isEmpty() || midinit.getText().isEmpty()
-    		|| city.getText().isEmpty() || state.getText().isEmpty() || email.getText().isEmpty()
-    		|| (date.getValue() == null) || amount_of_people.getText().isEmpty() || 
-    		zip.getText().isEmpty() || reason.getText().isEmpty())
-    	{
-    		showAlert(Alert.AlertType.ERROR, owner, "Form Error", "Please fill out all fields.");
-    		return;
-    	}
-    	
-    	String zip1 = zip.getText();
-    	String amount = amount_of_people.getText();
-    	
-    	String name = fname.getText() + " " + midinit.getText() + ". " + lname.getText();
-    	String email1 = email.getText();
-    	String city1 = city.getText();
-    	String state1 = state.getText();
-    	int zipcode = Integer.parseInt(zip1);
-    	String date1 = date.getValue().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-    	int people = Integer.parseInt(amount);
-    	String reason1 = reason.getText();
-    	
-    	model.insertRecord(name, email1, city1, state1, zipcode, date1, people, reason1);
-    	showAlert(Alert.AlertType.CONFIRMATION, owner, "Registration Successful!",
+    void btnSubmitClicked(ActionEvent event) throws SQLException {
+        Window owner = submit_button.getScene().getWindow();
+
+        // throwing an error if not all fields are filled out
+        if (fname.getText().isEmpty() || lname.getText().isEmpty() || midinit.getText().isEmpty()
+                || city.getText().isEmpty() || state.getText().isEmpty() || email.getText().isEmpty()
+                || (date.getValue() == null) || amount_of_people.getText().isEmpty() ||
+                zip.getText().isEmpty() || reason.getText().isEmpty()) {
+            showAlert(Alert.AlertType.ERROR, owner, "Form Error", "Please fill out all of the fields.");
+            return;
+        }
+
+        String zip1 = zip.getText();
+        String amount = amount_of_people.getText();
+
+        String name = fname.getText() + " " + midinit.getText() + ". " + lname.getText();
+        String email1 = email.getText();
+        String city1 = city.getText();
+        String state1 = state.getText();
+        int zipcode = Integer.parseInt(zip1);
+        String date1 = date.getValue().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        int people = Integer.parseInt(amount);
+        String reason1 = reason.getText();
+
+        model.insertRecord(name, email1, city1, state1, zipcode, date1, people, reason1);
+
+        showAlert(Alert.AlertType.CONFIRMATION, owner, "Registration Successful!",
                 "You are registered " + name);
-    	
+
     }
-    
-    //method for displaying an error with input from user's side
-    private static void showAlert(Alert.AlertType alertType, Window owner, String title, String message) 
-    {
+
+    // method for displaying an error with input from user's side
+    private static void showAlert(Alert.AlertType alertType, Window owner, String title, String message) {
         Alert alert = new Alert(alertType);
         alert.setTitle(title);
         alert.setHeaderText(null);
@@ -151,24 +135,23 @@ public class sceneController {
         alert.initOwner(owner);
         alert.show();
     }
-    
-    //setting table view 
+
+    // setting table view
     @FXML
     public void setTableView() {
-    	nameColumn.setCellValueFactory(new PropertyValueFactory<Visitor, String>("Name"));
-    	emailColumn.setCellValueFactory(new PropertyValueFactory<Visitor, String>("Email"));
-    	cityColumn.setCellValueFactory(new PropertyValueFactory<Visitor, String>("City"));
-    	stateColumn.setCellValueFactory(new PropertyValueFactory<Visitor, String>("State"));
-    	zipColumn.setCellValueFactory(new PropertyValueFactory<Visitor, Integer>("Zipcode"));
-    	dateColumn.setCellValueFactory(new PropertyValueFactory<Visitor, String>("Date"));
-    	peopleColumn.setCellValueFactory(new PropertyValueFactory<Visitor, Integer>("Group"));
-    	reasonColumn.setCellValueFactory(new PropertyValueFactory<Visitor, String>("Reason"));
-    	tableview.setItems(model.getVisitors());
+        nameColumn.setCellValueFactory(new PropertyValueFactory<Visitor, String>("Name"));
+        emailColumn.setCellValueFactory(new PropertyValueFactory<Visitor, String>("Email"));
+        cityColumn.setCellValueFactory(new PropertyValueFactory<Visitor, String>("City"));
+        stateColumn.setCellValueFactory(new PropertyValueFactory<Visitor, String>("State"));
+        zipColumn.setCellValueFactory(new PropertyValueFactory<Visitor, Integer>("Zipcode"));
+        dateColumn.setCellValueFactory(new PropertyValueFactory<Visitor, String>("Date"));
+        peopleColumn.setCellValueFactory(new PropertyValueFactory<Visitor, Integer>("Group"));
+        reasonColumn.setCellValueFactory(new PropertyValueFactory<Visitor, String>("Reason"));
+        tableview.setItems(model.getVisitors());
     }
-    
- 
-    //values for visitor's side
-	@FXML
+
+    // values for visitor's side
+    @FXML
     private TextField amount_of_people;
 
     @FXML
@@ -197,9 +180,8 @@ public class sceneController {
 
     @FXML
     private TextField zip;
-    
-    
-    //values for database side
+
+    // values for database side
     @FXML
     private TextField city_input;
 
@@ -214,7 +196,7 @@ public class sceneController {
 
     @FXML
     private TextField zip_input;
-    
+
     @FXML
     public TableView<Visitor> tableview;
 
@@ -235,10 +217,10 @@ public class sceneController {
 
     @FXML
     private TableColumn<Visitor, String> stateColumn;
-    
+
     @FXML
     private TableColumn<Visitor, Integer> zipColumn;
-    
+
     @FXML
     private TableColumn<Visitor, Integer> peopleColumn;
 
