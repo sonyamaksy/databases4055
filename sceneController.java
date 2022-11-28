@@ -29,6 +29,7 @@ public class sceneController {
     @FXML
     Button switch_database, v_main, b_main, submit_button, search_button,
             visitor, bureau;
+    Label totalSearchResults;
 
     // takes user to database search side
     @FXML
@@ -68,6 +69,7 @@ public class sceneController {
         setTableView();
         LocalDate date = null;
         Window owner = search_button.getScene().getWindow();
+        int numResults = 0;
 
         if (metro_input.getText().isEmpty() && city_input.getText().isEmpty() && zip_input.getText().isEmpty()
                 && date_input.getValue() == null && reason_input.getText().isEmpty()) 
@@ -89,6 +91,10 @@ public class sceneController {
         else
     	{
             tableview.setItems(model.getVisitors());
+            numResults = tableview.getItems.size();
+            totalSearchResults.setVisible(true);
+            totalSearchResults.setText("Your search has returned " + numResults + " results.");
+            
     	}
        
     }
