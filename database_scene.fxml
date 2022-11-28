@@ -55,7 +55,7 @@
                         <TableColumn fx:id="reasonColumn" prefWidth="87.0" text="Reason" />
                     </columns>
                   </TableView>
-                  <Label fx:id="totalSearchResults" layoutX="14.0" layoutY="342.0" prefHeight="18.0" prefWidth="375.0" />
+                  <Label fx:id="totalSearchResults" layoutX="14.0" layoutY="342.0" prefHeight="18.0" prefWidth="375.0" text="Your search has returned ? results." visible="false" />
                </children>
             </AnchorPane>
         </items>
